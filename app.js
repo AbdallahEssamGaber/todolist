@@ -10,11 +10,11 @@ app.set("view engine", "ejs");
 app.get("/",function(req, res){
 
 
-  // var movie = randomMovieNames({exactly: 1, wordsPerString: 1});
-  // var basicBasic = movie;
-  // movie = movie[0].replace(/([A-Z])/g, ' $1').trim();
-  // var  movieBasic = movie;
-  movie = "Beef I V B";
+  var movie = randomMovieNames({exactly: 1, wordsPerString: 1});
+  var basicBasic = movie;
+  movie = movie[0].replace(/([A-Z])/g, ' $1').trim();
+  var  movieBasic = movie;
+  // movie = "Beef I V B";
   // movie = "C K Shameles"
 
   //movie="U Y H Whats Up";
@@ -27,8 +27,34 @@ app.get("/",function(req, res){
   for(var i = 0; i <= movie.length; i++){
 
 
+    if(movie.charAt(i) !== " " && movie.charAt(i) === movie.charAt(i).toUpperCase() && movie.charAt(i+1) === " " && movie.charAt(i+2) === movie.charAt(i+2).toUpperCase() && movie.charAt(i+3) == " " && movie.charAt(i+4) == movie.charAt(i+4).toUpperCase() && movie.length == i+5){
+
+      var anotherArray = [];
+      var splittedArray = movie.split("");
+      movie = []
+      var char = splittedArray.splice(0,i);
+      movie.push(char);
+      var char = splittedArray.splice(0,1);
+      splittedArray.shift()
+      movie.push(char);
+      var char = splittedArray.splice(0,1);
+      splittedArray.shift()
+      movie.push(char);
+      var char = splittedArray.splice(0,1);
+      movie.push(char);
+      // while(splittedArray.length != 0){
+      //   console.log("entered");
+      //   var char = splittedArray.splice(i,1);
+      //   if (movie.length == i) splittedArray.shift();
+      //   movie.push(char)
+    // }
+
+    }
+    movie = movie.toString().replace(",", '').trim();
+
+
+
     if(movie.charAt(i) !== " " && movie.charAt(i) === movie.charAt(i).toUpperCase() && movie.charAt(i+1) === " " && movie.charAt(i+2) === movie.charAt(i+2).toUpperCase() && movie.charAt(i+2) !== " " && movie.charAt(i+3) === " " && movie.charAt(i+4) !== " " && movie.charAt(i+4) === movie.charAt(i+4).toUpperCase() && movie.charAt(i+5) === " "){
-      console.log("Entered One");
       var anotherArray = [];
       var splittedArray = movie.split("");
       movie = []
@@ -44,12 +70,11 @@ app.get("/",function(req, res){
 
     movie = movie.toString().replace(",", '').trim();
 
-    if(movie.charAt(i) !== " " && movie.charAt(i) === movie.charAt(i).toUpperCase() && movie.charAt(i+1) === " " && movie.charAt(i+2) === movie.charAt(i+2).toUpperCase() && movie.charAt(i+2) !== " " && movie.charAt(i+3) === " " && movie.charAt(i+4) !== " " && movie.charAt(i+4) === movie.charAt(i+4).toUpperCase() && movie.charAt(i+5) === movie.charAt(i+5).toLowerCase() && movie.charAt(i+5) !== " "){
-      console.log("Entered Two");
+    if(movie.charAt(i) !== " " && movie.charAt(i) === movie.charAt(i).toUpperCase() && movie.charAt(i+1) === " " && movie.charAt(i+2) === movie.charAt(i+2).toUpperCase() && movie.charAt(i+2) !== " " && movie.charAt(i+3) === " " && movie.charAt(i+4) !== " " && movie.charAt(i+4) === movie.charAt(i+4).toUpperCase() && movie.length > i+5 && movie.charAt(i+5) === movie.charAt(i+5).toLowerCase() && movie.charAt(i+5) !== " "){
 
       var anotherArray = [];
       var splittedArray = movie.split("");
-      movie = []
+      movie = [];
       while(splittedArray.length != 0){
 
         var char = splittedArray.splice(i,1);
@@ -60,9 +85,7 @@ app.get("/",function(req, res){
     }
     movie = movie.toString().replace(",", '').trim();
 
-
     if(movie.charAt(i) !== " " && movie.charAt(i) === movie.charAt(i).toUpperCase() && movie.charAt(i+1) === " " && movie.charAt(i+2) === movie.charAt(i+2).toUpperCase() && movie.length == i+3){
-      console.log("Entered Three");
 
       var anotherArray = [];
       var splittedArray = movie.split("");
@@ -81,7 +104,6 @@ app.get("/",function(req, res){
       //   if (movie.length == i) splittedArray.shift();
       //   movie.push(char)
     // }
-    console.log(movie);
 
     }
     movie = movie.toString().replace(",", '').trim();
@@ -136,7 +158,7 @@ app.get("/",function(req, res){
     //   }
     // // }
   }
-  // console.log(basicBasic + " | " + movieBasic + " -> " + movie);
+  console.log(basicBasic + " | " + movieBasic + " -> " + movie);
   var today = new Date();
   var currentDay = today.getDay()
   var day = "";
@@ -147,7 +169,7 @@ app.get("/",function(req, res){
   }
   res.render("list", {thatDay: day, mvName: movie});
 
-})
+});
 
 
 app.listen(3000, function(){
