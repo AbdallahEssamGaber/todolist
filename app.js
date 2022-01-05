@@ -10,6 +10,7 @@ app.use(express.static("public"));
 
 
 var newTasks = ["Plan", "Study", "Eat Food"];
+var workTasks = [];
 
 app.get("/",function(req, res){
 
@@ -24,16 +25,33 @@ app.get("/",function(req, res){
   };
   var day = today.toLocaleDateString("en-US", options)
 
-  res.render("list", {thatDay: day, newTasks: newTasks});
+  res.render("list", {listTitle: day, newTasks: newTasks});
 
 
 });
 
 app.post("/", function(req, res){
+
   newTask = req.body.newTask;
+  if(req.body.list === "Work"){
+    workTasks.push(newTask);
+    res.redirect("/work");
+    return;
+  }
   newTasks.push(newTask);
   res.redirect("/")
 });
+
+
+app.get("/work", function(req,res){
+  res.render("list", {listTitle: "Work List", newTasks: workTasks});
+});
+
+app.post("/work", function(req,res){
+  newTask = req.body.newTask;
+  workTasks.push(newTask);
+  res.redirect("/work");
+})
 
 
 app.listen(3000, function(){
