@@ -8,16 +8,13 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
 
-var newTasks = ["Plan", "Study", "Eat Food"];
-var workTasks = [];
+const newTasks = ["Plan", "Study", "Eat Food"];
+const workTasks = [];
 
 app.get("/",function(req, res){
 
 
-
-
-
-  res.render("list", {listTitle: date.getDay(), newTasks: newTasks});
+  res.render("list", {listTitle: date.getDate(), newTasks: newTasks});
 
 
 });
@@ -25,11 +22,15 @@ app.get("/",function(req, res){
 app.post("/", function(req, res){
 
   newTask = req.body.newTask;
+
+  
   if(req.body.list === "Work"){
     workTasks.push(newTask);
     res.redirect("/work");
     return;
   }
+
+
   newTasks.push(newTask);
   res.redirect("/")
 });
@@ -38,12 +39,6 @@ app.post("/", function(req, res){
 app.get("/work", function(req,res){
   res.render("list", {listTitle: "Work List", newTasks: workTasks});
 });
-
-app.post("/work", function(req,res){
-  newTask = req.body.newTask;
-  workTasks.push(newTask);
-  res.redirect("/work");
-})
 
 
 app.listen(3000, function(){
