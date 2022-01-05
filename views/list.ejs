@@ -3,8 +3,31 @@
   <head>
     <meta charset="utf-8">
     <title>to do list app بقا</title>
+    <link rel="stylesheet" href="/css/style.css">
   </head>
-  <body style="background-color: black">
-   <p style="color: white">Its <%=thatDay%>. I recommand to watch this mv <%=mvName%> </p>
+  <body style="background-color: black; color: white">
+  <div class="box" id="heading">
+    <h1><%= thatDay %></h1>
+  </div>
+  <div class="box">
+
+  </div>
+
+    <div class="box">
+      <% for(var i = 0; i < newTasks.length; i++){ %>
+      <div class="item">
+        <input type="checkbox">
+        <p><%= newTasks[i] %></p>
+      </div>
+        <%}%>
+
+
+      <form class="item" action="/" method="post">
+        <input type="text" name="newTask" placeholder="new Item" autocomplete="off"/>
+        <button type="submit" name="button"></button>
+      </form>
+    </div>
+
+
   </body>
 </html>

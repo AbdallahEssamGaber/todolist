@@ -1,28 +1,38 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const randomMovieNames = require('movies-names');
 
 
 const app = express();
 
 app.set("view engine", "ejs");
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static("public"));
+
+
+var newTasks = ["Plan", "Study", "Eat Food"];
 
 app.get("/",function(req, res){
 
-  var movie = randomMovieNames.random().title;
 
 
   var today = new Date();
   var currentDay = today.getDay()
-  var day = "";
-  if(currentDay == 1){
-    day = "Mo"
-  }else{
-    day = "fokak"
-  }
-  res.render("list", {thatDay: day, mvName: movie});
+  var options = {
+    weekday: "long",
+    day: 'numeric',
+    month: "long"
+  };
+  var day = today.toLocaleDateString("en-US", options)
+
+  res.render("list", {thatDay: day, newTasks: newTasks});
 
 
+});
+
+app.post("/", function(req, res){
+  newTask = req.body.newTask;
+  newTasks.push(newTask);
+  res.redirect("/")
 });
 
 
