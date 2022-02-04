@@ -108,8 +108,8 @@ app.post("/delete", function(req, res){
 
 
 app.post("/restore", function(req, res){
-  const idUnChecked = req.body.restoreCheckbox;
-  console.log(idUnChecked);
+  // const idUnChecked = req.body.restoreCheckbox;
+  console.log(req.body);
   // ItemArchive.findById(idUnChecked, function(err, restoreItem){
   //   restoreItemName = restoreItem.name;
   //   const itemRestored = new Item({

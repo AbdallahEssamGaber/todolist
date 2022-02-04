@@ -8,27 +8,22 @@
 </div>
 <div class="box">
   <% newTasks.forEach(function(item) { %>
-
-  <% if(route === "/archive") { %>
-  <form action="/restore" method="post">
-    <div class="item">
-      <input value="<%=item._id%>" onchange="this.form.submit()" name="restoreCheckbox" />
-      <p><%= item.name %></p>
-    </div>
-  </form>
-  <% } %>
-
+    <% if(route === "/archive") { %>
+    <form action="/restore" method="post">
+      <div class="item">
+        <input type="checkbox"  name="restoreCheckbox" value="<%=item._id%>" onchange="this.form.submit()"  />
+        <p><%= item.name %></p>
+      </div>
+    </form>
+    <% } %>
   <% if(route !== "/archive") { %>
   <form action="/delete" method="post">
-
     <div class="item">
-
       <input type="checkbox" name="deleteCheckbox" value="<%=item._id%>" onchange="this.form.submit()">
       <p><%= item.name %></p>
     </div>
   </form>
   <% } %>
-
   <%   }); %>
 
 
