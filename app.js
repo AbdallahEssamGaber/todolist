@@ -5,12 +5,13 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
-const mongoose = require("mongoose");
 const _ = require("lodash");
+const mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost:27017/todolistDB");
 
-// const newTasks = ["Plan", "Study", "Eat Food"];
-// const workT asks= [];
+
+
+
 
 const itemsSchema = {
   name: String
