@@ -6,7 +6,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
 const mongoose = require("mongoose");
-
+const _ = require("lodash");
 mongoose.connect("mongodb://localhost:27017/todolistDB");
 
 // const newTasks = ["Plan", "Study", "Eat Food"];
@@ -96,27 +96,44 @@ app.post("/", function(req, res){
 
 app.post("/delete", function(req, res){
   const idChecked = req.body.deleteCheckbox;
-  Item.findById(idChecked, function(err, deltedItem){
-    deleteItemName = deltedItem.name;
-    const itemDelted = new ItemArchive({
-      name: deleteItemName
+  const listName = req.body.listName;
+
+
+  if(listName === "Today"){
+    Item.findById(idChecked, function(err, deltedItem){
+      deleteItemName = deltedItem.name;
+      const itemDelted = new ItemArchive({
+        name: deleteItemName
+      });
+      itemDelted.save();
+
     });
-    itemDelted.save();
 
-  });
+    Item.findByIdAndRemove(idChecked, function(err){
+      if(err){
+        console.log(err);
+      }
+
+      else{
+            console.log("item " + idChecked + "got deleted");
+            res.redirect("/");
+      }
+
+    });
 
 
-  Item.findByIdAndRemove(idChecked, function(err){
-    if(err){
-      console.log(err);
-    }
+  }
+  else {
+    //archive it in its place
 
-    else{
-          console.log("item " + idChecked + "got deleted");
-          res.redirect("/");
-    }
+      List.findOneAndUpdate({name: listName}, {$pull: {items:{_id: idChecked}}}, function(err, found){
+        if(err)  console.log(err);
+        else  res.redirect("/" + listName);
+      });
+  }
 
-  });
+
+
 
 });
 
@@ -146,7 +163,7 @@ app.post("/restore", function(req, res){
 });
 
 app.get("/:customRoute", function(req, res){
-  const customListName = req.params.customRoute;
+  const customListName = _.capitalize(req.params.customRoute);
 
   List.findOne({name: customListName}, function(err, foundList){
 
