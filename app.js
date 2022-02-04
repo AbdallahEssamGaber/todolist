@@ -16,13 +16,18 @@ const itemsSchema = {
   name: String
 };
 
+const archiveSchema = {
+  name: String,
+  fromListName: String
+}
+
 const listSchema = {
   name: String,
   items: [itemsSchema]
 };
 
 const Item = mongoose.model("Item", itemsSchema);
-const ItemArchive = mongoose.model("itemsArchive", itemsSchema);
+const ItemArchive = mongoose.model("itemsArchive", archiveSchema);
 const List = mongoose.model("List", listSchema);
 
 const item1 = new Item({
@@ -36,6 +41,7 @@ const item2 = new Item({
 const item3 = new Item({
   name: "welcome again!"
 });
+
 
 const defaultItems = [item1, item2, item3];
 
@@ -85,8 +91,8 @@ app.post("/", function(req, res){
   } else {
     List.findOne({name: listName}, function(err, foundList){
       foundList.items.push(item);
-      foundList.save()
-      res.redirect("/"+listName)
+      foundList.save();
+      res.redirect("/"+listName);
     });
   }
 
@@ -97,13 +103,13 @@ app.post("/", function(req, res){
 app.post("/delete", function(req, res){
   const idChecked = req.body.deleteCheckbox;
   const listName = req.body.listName;
-
-
+  const itemNameD = req.body.itemName;
   if(listName === "Today"){
     Item.findById(idChecked, function(err, deltedItem){
       deleteItemName = deltedItem.name;
       const itemDelted = new ItemArchive({
-        name: deleteItemName
+        name: deleteItemName,
+        fromListName: listName
       });
       itemDelted.save();
 
@@ -124,12 +130,18 @@ app.post("/delete", function(req, res){
 
   }
   else {
-    //archive it in its place
+    const itemDelted = new ItemArchive({
+      name: itemNameD,
+      fromListName: listName
+    });
+    itemDelted.save();
 
-      List.findOneAndUpdate({name: listName}, {$pull: {items:{_id: idChecked}}}, function(err, found){
-        if(err)  console.log(err);
-        else  res.redirect("/" + listName);
-      });
+
+
+    List.findOneAndUpdate({name: listName}, {$pull: {items:{_id: idChecked}}}, function(err, found){
+      if(err)  console.log(err);
+      else  res.redirect("/" + listName);
+    });
   }
 
 
@@ -140,13 +152,26 @@ app.post("/delete", function(req, res){
 
 app.post("/restore", function(req, res){
   const idUnChecked = req.body.restoreCheckbox;
-  ItemArchive.findById(idUnChecked, function(err, restoreItem){
-    restoreItemName = restoreItem.name;
+
+  ItemArchive.findById(idUnChecked, function(err, foundItem){
+    const listNameDeleted = foundItem.fromListName;
     const itemRestored = new Item({
-      name: restoreItemName
+      name: foundItem.name
     });
-    itemRestored.save();
+
+    if(listNameDeleted === "Today"){
+      itemRestored.push();
+    } else {
+      List.findOne({name: listNameDeleted}, function(err, foundList){
+        foundList.items.push(itemRestored);
+        foundList.save();
+      });
+    }
+
   });
+
+
+
 
 
   ItemArchive.findByIdAndRemove(idUnChecked, function(err){
@@ -155,7 +180,6 @@ app.post("/restore", function(req, res){
     }
 
     else{
-          console.log("item " + idUnChecked + "got deleted");
           res.redirect("/archive");
     }
 
