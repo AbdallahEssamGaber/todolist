@@ -1,6 +1,5 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const date = require(__dirname + "/date.js")
 const app = express();
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
@@ -17,8 +16,14 @@ const itemsSchema = {
   name: String
 };
 
+const listSchema = {
+  name: String,
+  items: [itemsSchema]
+};
+
 const Item = mongoose.model("Item", itemsSchema);
 const ItemArchive = mongoose.model("itemsArchive", itemsSchema);
+const List = mongoose.model("List", listSchema);
 
 const item1 = new Item({
   name: "Welcome to your todolist!"
@@ -49,7 +54,7 @@ app.get("/",function(req, res){
       });
       res.redirect("/");
     }else{
-      res.render("list", {listTitle: date.getDate(), newTasks: found, route: "/"});
+      res.render("list", {listTitle: "Today", newTasks: found, route: "/"});
     }
   })
 
@@ -69,13 +74,22 @@ app.get("/archive", function(req, res){
 app.post("/", function(req, res){
 
   const newTask = req.body.newTask;
-
+  const listName = req.body.list;
   const item = new Item({
     name: newTask
   })
 
-  item.save();
-  res.redirect("/");
+  if(listName === "Today"){
+    item.save();
+    res.redirect("/");
+  } else {
+    List.findOne({name: listName}, function(err, foundList){
+      foundList.items.push(item);
+      foundList.save()
+      res.redirect("/"+listName)
+    });
+  }
+
 
 });
 
@@ -108,35 +122,54 @@ app.post("/delete", function(req, res){
 
 
 app.post("/restore", function(req, res){
-  // const idUnChecked = req.body.restoreCheckbox;
-  console.log(req.body);
-  // ItemArchive.findById(idUnChecked, function(err, restoreItem){
-  //   restoreItemName = restoreItem.name;
-  //   const itemRestored = new Item({
-  //     name: restoreItemName
-  //   });
-  //   itemRestored.save();
-  // });
-  //
-  //
-  // ItemArchive.findByIdAndRemove(idUnChecked, function(err){
-  //   if(err){
-  //     console.log(err);
-  //   }
-  //
-  //   else{
-  //         console.log("item " + idUnChecked + "got deleted");
-  //         res.redirect("/archive");
-  //   }
-  //
-  // });
-  res.redirect("/archive")
-});
+  const idUnChecked = req.body.restoreCheckbox;
+  ItemArchive.findById(idUnChecked, function(err, restoreItem){
+    restoreItemName = restoreItem.name;
+    const itemRestored = new Item({
+      name: restoreItemName
+    });
+    itemRestored.save();
+  });
 
 
-app.get("/work", function(req,res){
-  res.render("list", {listTitle: "Work List", newTasks: workTasks});
+  ItemArchive.findByIdAndRemove(idUnChecked, function(err){
+    if(err){
+      console.log(err);
+    }
+
+    else{
+          console.log("item " + idUnChecked + "got deleted");
+          res.redirect("/archive");
+    }
+
+  });
 });
+
+app.get("/:customRoute", function(req, res){
+  const customListName = req.params.customRoute;
+
+  List.findOne({name: customListName}, function(err, foundList){
+
+    if(err) console.log(err);
+    else {
+      if(!foundList){
+        const list = new List({
+          name: customListName,
+          items: defaultItems
+        });
+
+        list.save();
+        res.redirect("/"+customListName)
+      }
+      else{
+        res.render("list", {listTitle: customListName, newTasks: foundList.items, route: "/"+customListName})
+      }
+    }
+
+  });
+
+
+})
 
 
 app.listen(process.env.PORT || 3000, function(){
