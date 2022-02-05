@@ -7,7 +7,7 @@ app.use(express.static("public"));
 
 const _ = require("lodash");
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost:27017/todolistDB");
+mongoose.connect("mongodb+srv://admin-sam:test123@cluster0.h2wey.mongodb.net/todolistDB");
 
 
 
@@ -214,6 +214,11 @@ app.get("/:customRoute", function(req, res){
 })
 
 
-app.listen(process.env.PORT || 3000, function(){
+let port = process.env.PORT;
+if (port = null || port == ""){
+  port = 3000
+}
+
+app.listen(port, function(){
   console.log("server running w kda");
 })
