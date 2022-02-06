@@ -161,7 +161,7 @@ app.post("/restore", function(req, res){
     });
 
     if(listNameDeleted === "Today"){
-      itemRestored.push();
+      itemRestored.save();
     } else {
       List.findOne({name: listNameDeleted}, function(err, foundList){
         foundList.items.push(itemRestored);
@@ -214,11 +214,11 @@ app.get("/:customRoute", function(req, res){
 })
 
 
-let port = process.env.PORT;
-if (port = null || port == ""){
-  port = 3000
-}
+// let port = process.env.PORT;
+// if (port == null || port == ""){
+//   port = 3000
+// }
 
-app.listen(port, function(){
+app.listen(process.env.PORT || 3000, function(){
   console.log("server running w kda");
 })
