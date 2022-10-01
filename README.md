@@ -8,5 +8,5 @@ I made a really samrt todolist while i was learning more about back-end.
 - you can make unlimited lists just go to `/nameOfTheList`
 
 
-
+---
 _I made this for fun and i keep updating it when I wanna have fun on a free time so more updates coming hopefully._
