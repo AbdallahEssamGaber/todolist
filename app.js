@@ -7,7 +7,7 @@ app.use(express.static("public"));
 
 const _ = require("lodash");
 const mongoose = require("mongoose");
-mongoose.connect("mongodb+srv://admin-sam:test123@cluster0.h2wey.mongodb.net/todolistDB");
+mongoose.connect("mongodb+srv://test:test123@todocluster.vjlajac.mongodb.net/todolistDB");
 
 
 
