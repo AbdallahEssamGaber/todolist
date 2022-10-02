@@ -6,8 +6,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
 const _ = require("lodash");
+require('dotenv').config();
 const mongoose = require("mongoose");
-mongoose.connect("mongodb+srv://test:test123@todocluster.vjlajac.mongodb.net/todolistDB");
+mongoose.connect(process.env.SECRET_KEY);
 
 
 
